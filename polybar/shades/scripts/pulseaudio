@@ -1,0 +1,74 @@
+    #!/bin/sh
+
+    update_sink() {
+        sink=$(pacmd list-sinks | sed -n '/\* index:/ s/.*: //p')
+    }
+
+    volume_up() {
+        update_sink
+        pactl set-sink-volume "$sink" +1%
+    }
+
+    volume_down() {
+        update_sink
+        pactl set-sink-volume "$sink" -1%
+    }
+
+    volume_mute() {
+        update_sink
+        pactl set-sink-mute "$sink" toggle
+    }
+
+    volume_print() {
+        update_sink
+
+        sink_info=$(pacmd list-sinks | sed -n "/index: $sink/,/index:/p")
+        active_port=$(echo "$sink_info" | grep "active port:")
+        volume=$(echo "$sink_info" | awk -F/ '/\tvolume:/{gsub(/^[ \t]+/, "", $2); gsub(/[ \t]+$/, "", $2); print $2}')
+
+        if echo "$active_port" | grep -q analog-output-speaker; then
+            icon_active="蓼"
+            icon_muted="遼"
+        elif echo "$active_port" | grep -q analog-output-headphones; then
+            icon_active=""
+            icon_muted="ﳌ"
+        elif echo "$active_port" | grep -q headset-output; then
+            icon_active=""
+            icon_muted=""
+        else
+            icon_active="??"
+            icon_muted="!!"
+        fi
+
+        if echo "$sink_info" | grep -q "muted: yes"
+        then
+            echo "$icon_muted"
+        else
+            printf "$icon_active %3s\n" "$volume"
+        fi
+    }
+
+    listen() {
+        volume_print
+
+        pactl subscribe | while read -r event; do
+            if echo "$event" | grep -q "change"; then
+                volume_print
+            fi
+        done
+    }
+
+    case "$1" in
+        --up)
+            volume_up
+            ;;
+        --down)
+            volume_down
+            ;;
+        --mute)
+            volume_mute
+            ;;
+        *)
+            listen
+            ;;
+    esac
