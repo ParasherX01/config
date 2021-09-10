@@ -6,7 +6,7 @@ configuration {
   hide-scrollbar:  true;
   disable-history: false;
   //monitor:         "-4";
-  modi:            "drun,run,file-browser,combi,calc";
+  modi:            "drun,run,filebrowser,combi,calc";
   display-drun:    "apps";
   columns:         1;
 }
