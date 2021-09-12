@@ -151,3 +151,11 @@ super + ctrl + shift + Tab
 
 Print
 	flameshot gui
+
+#Brightness up
+XF86MonBrightnessUp
+    brightnessctl set 5%+
+
+#Brightness down
+XF86MonBrightnessDown
+    brightnessctl set 5%-
