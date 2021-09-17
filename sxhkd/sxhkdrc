@@ -129,16 +129,27 @@ super + {Left,Down,Up,Right}
 
 super + Escape
 	playerctl play-pause
+XF86AudioPlay
+	playerctl play-pause
+
 
 super + shift + Escape
+	playerctl next
+XF86AudioNext
 	playerctl next
 
 super + minus
 	pactl set-sink-volume @DEFAULT_SINK@ -5%
+XF86AudioLowerVolume
+	pactl set-sink-volume @DEFAULT_SINK@ -5%
 
 super + equal
 	pactl set-sink-volume @DEFAULT_SINK@ +5%
+XF86AudioRaiseVolume
+	pactl set-sink-volume @DEFAULT_SINK@ +5%
 
+XF86AudioMute
+	amixer set Master toggle
 
 ###CUSTOM###
 
